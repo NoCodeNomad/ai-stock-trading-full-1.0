@@ -9,9 +9,12 @@ import os
 
 def get_features(df):
     df = df.copy()
-    df['SMA_10'] = SMAIndicator(df['Close'], window=10).sma_indicator().squeeze()
-    df['SMA_50'] = SMAIndicator(df['Close'], window=50).sma_indicator().squeeze()
-    df['Return'] = df['Close'].pct_change()
+    close_series = df['Close']
+    if isinstance(close_series, pd.DataFrame):
+        close_series = close_series.squeeze()
+    df['SMA_10'] = SMAIndicator(close_series, window=10).sma_indicator()
+    df['SMA_50'] = SMAIndicator(close_series, window=50).sma_indicator()
+    df['Return'] = close_series.pct_change()
     df['Target'] = (df['Return'].shift(-1) > 0).astype(int)
     df.dropna(inplace=True)
     return df
