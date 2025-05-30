@@ -2,39 +2,36 @@ name: Run AI Trading Bot
 
 on:
   schedule:
-    - cron: "0 * * * *"  # runs every hour
-  workflow_dispatch:
+    - cron: "0 * * * *"   # Every hour
+  workflow_dispatch:       # Manual trigger
 
 jobs:
-  run-bot:
+  run_bot:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Set up Python
+      - name: Set up Python 3.11
         uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
+          python-version: 3.11
 
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run trading bot
-        run: |
-          if [ ! -f "model.pkl" ]; then
-            echo "Model not found! Skipping trading."
-            exit 0
-          fi
-          python main.py
+      - name: Run trading bot script
+        run: python main.py
 
-      - name: Commit updated balance and portfolio
+      - name: List files for debug
+        run: ls -l
+
+      - name: Commit updated portfolio and balance files
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add balance.txt portfolio.json
+          if test -f balance.txt; then git add balance.txt; fi
+          if test -f portfolio.json; then git add portfolio.json; fi
           git commit -m "Update portfolio after bot run" || echo "No changes to commit"
           git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
