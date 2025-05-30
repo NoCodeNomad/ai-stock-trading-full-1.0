@@ -1,16 +1,15 @@
-name: Run Model Training
+name: Train AI Models
 
 on:
-  workflow_dispatch:  # run manually from Actions tab
+  workflow_dispatch:
   schedule:
-    - cron: "30 1 * * *"  # every day at 1:30 AM UTC
+    - cron: "0 3 * * *"  # every day at 3 AM UTC
 
 jobs:
-  train-model:
+  train:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v3
 
       - name: Set up Python 3.11
@@ -24,10 +23,19 @@ jobs:
       - name: Run training script
         run: python train_model.py
 
-      - name: Commit trained models
+      - name: Commit trained models if they exist
+        env:
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add models/
-          git commit -m "Save trained models" || echo "No changes to commit"
-          git push https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }} HEAD:main
+
+          if [ -d "models" ]; then
+            git add models/
+            git diff --cached --quiet || (
+              git commit -m "Save trained models"
+              git push https://x-access-token:${PAT_TOKEN}@github.com/${{ github.repository }} HEAD:main
+            )
+          else
+            echo "No models folder found, skipping commit."
+          fi
