@@ -1,5 +1,3 @@
-# train_model.py
-
 import yfinance as yf
 import pandas as pd
 from ta.trend import SMAIndicator
@@ -31,6 +29,8 @@ def train_model(ticker):
         X = df[['SMA_10', 'SMA_50', 'Return']]
         y = df['Target']
 
+        print(f"{ticker} - Features shape: {X.shape}, Target shape: {y.shape}")
+
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
         print(f"Training model for {ticker}...")
@@ -50,12 +50,10 @@ def train_model(ticker):
         print(f"Error processing {ticker}: {e}")
 
 if __name__ == "__main__":
-    # Read tickers from file if it exists
     if os.path.exists("symbols.csv"):
         tickers_df = pd.read_csv("symbols.csv")
         tickers = tickers_df['symbol'].tolist()
     else:
-        # Fallback to default sample
         tickers = ["AAPL", "MSFT", "SPY", "BTC-USD", "ETH-USD"]
 
     for ticker in tickers:
