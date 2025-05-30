@@ -1,0 +1,29 @@
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Environment folders
+env/
+venv/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Ignore model files (uncomment if you don't want to track models)
+# models/
+
+# Ignore data artifacts and logs
+*.csv
+*.tsv
+*.log
+
+# Ignore output tracking files
+balance.txt
+portfolio.json
+
+# Ignore joblib model backups
+*.pkl
