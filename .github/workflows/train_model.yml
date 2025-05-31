@@ -25,17 +25,18 @@ jobs:
 
       - name: Commit trained models if they exist
         env:
-          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+          PAT_TOKEN: ${{ secrets.Ai-trader }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           if [ -d "models" ]; then
             git add models/
-            git diff --cached --quiet || (
+            if ! git diff --cached --quiet; then
               git commit -m "Save trained models"
               git push https://x-access-token:${PAT_TOKEN}@github.com/${{ github.repository }} HEAD:main
-            )
+            else
+              echo "No changes in models, skipping commit."
+            fi
           else
             echo "No models folder found, skipping commit."
-          fi
