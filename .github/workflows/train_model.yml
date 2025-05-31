@@ -42,3 +42,4 @@ jobs:
             fi
           else
             echo "No models directory found, skipping commit."
+
