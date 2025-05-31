@@ -32,11 +32,12 @@ jobs:
 
           if [ -d "models" ]; then
             git add models/
-            if ! git diff --cached --quiet; then
+            git diff --cached --quiet
+            if [ $? -ne 0 ]; then
               git commit -m "Save trained models"
               git push https://x-access-token:${PAT_TOKEN}@github.com/${{ github.repository }} HEAD:main
             else
-              echo "No changes in models, skipping commit."
+              echo "No changes to commit."
             fi
           else
             echo "No models folder found, skipping commit."
