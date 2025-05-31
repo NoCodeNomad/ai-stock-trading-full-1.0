@@ -24,21 +24,20 @@ jobs:
         run: python train_model.py
 
       - name: Configure Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+        run: git config user.name "github-actions[bot]" && git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Commit trained models if they exist
         env:
           PAT_TOKEN: ${{ secrets.Ai-trader }}
         run: |
-          if [ -d "models" ]; then
-            git add models/
-            if ! git diff --cached --quiet; then
-              git commit -m "Save trained models"
-              git push https://x-access-token:${PAT_TOKEN}@github.com/${{ github.repository }} HEAD:main
-            else
-              echo "No model changes to commit."
-            fi
-          else
-            echo "No models directory found, skipping commit."
+          if [ -d "models" ]; then \
+            git add models/ && \
+            if ! git diff --cached --quiet; then \
+              git commit -m "Save trained models" && \
+              git push https://x-access-token:${PAT_TOKEN}@github.com/${{ github.repository }} HEAD:main; \
+            else \
+              echo "No model changes to commit."; \
+            fi; \
+          else \
+            echo "No models directory found, skipping commit."; \
+          fi
