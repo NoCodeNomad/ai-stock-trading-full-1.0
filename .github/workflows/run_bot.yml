@@ -1,33 +1,4 @@
-name: Run AI Trading Bot
 
-on:
-  schedule:
-    - cron: "0 * * * *"  # every hour
-  workflow_dispatch:
 
-jobs:
-  run-bot:
-    runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
 
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.11
-
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: Run trading bot
-        run: python main.py
-
-      - name: Commit updated portfolio files
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add portfolio.json balance.txt
-          git commit -m "Update portfolio after bot run" || echo "No changes to commit"
-          git push https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }} HEAD:main
