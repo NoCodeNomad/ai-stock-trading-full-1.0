@@ -30,7 +30,7 @@ jobs:
 
       - name: Commit trained models if they exist
         env:
-          PAT_TOKEN: ${{ secrets.Ai-trader }}
+          PAT_TOKEN: ${{ secrets.AI_TRADER }}  # Make sure your GitHub secret is renamed using _ not -
         run: |
           if [ -d "models" ]; then
             git add models/
@@ -42,4 +42,4 @@ jobs:
             fi
           else
             echo "No models directory found, skipping commit."
-
+          fi
